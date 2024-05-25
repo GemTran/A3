@@ -1,5 +1,5 @@
 //In client, can add event listeners for close, error, message events
-const socket = new WebSocket (`wss://gemtran-deno-server-21.deno.dev/`)
+const socket = new WebSocket (`wss://localhost/`)
 socket.onopen  = () => console.log (`client websocket opened!`)
 socket.onclose = () => console.log (`client websocket closed!`)
 socket.onerror =  e => console.dir (e)
