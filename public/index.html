@@ -1,0 +1,48 @@
+<!doctype html>
+<head>
+    <title> HuMAn </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Confessions</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #f0f0f0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #confession-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #confession-input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 200px;
+        }
+        .confession {
+            position: absolute;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            animation: float 5s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="confession-form">
+        <input type="text" id="confession-input" placeholder="Type your confession...">
+        <button type="button" onclick="submitConfession()">Submit</button>
+    </form>
+    <div id="confessions"></div>
+    <canvas id="confessionCanvas"></canvas>
+    <script type="module" src="script.js"></script>
+    
+
+</body>
