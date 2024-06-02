@@ -1,12 +1,13 @@
-// import { openKv } from "@deno/kv";
-const kv = await Deno.openKv();
-
-await kv.set("messages", messageElement)
 // //In server
 import { serve } from "https://deno.land/std@0.157.0/http/server.ts"
 import { serveDir } from "https://deno.land/std@0.157.0/http/file_server.ts"
 
 // import { getNetworkAddr } from "https://deno.land/x/local_ip/mod.ts" 
+
+// import { openKv } from "@deno/kv";
+const kv = await Deno.openKv();
+
+await kv.set("messages", messageElement)
 
 // const local_ip = await getNetworkAddr()
 // console.log (`local area network IP: ${ local_ip }`)
@@ -52,6 +53,7 @@ function handler (incoming_req) {
             sockets.forEach (s => s.send (e.data))
         }
         return response
+    
     }
     
 if (req.method === "POST" && req.url === "/saveConfession") {
