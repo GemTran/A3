@@ -1,5 +1,16 @@
 // import { openKv } from "@deno/kv";
 
+//In server
+import { serve } from "https://deno.land/std@0.157.0/http/server.ts"
+import { serveDir } from "https://deno.land/std@0.157.0/http/file_server.ts"
+
+import { getNetworkAddr } from "https://deno.land/x/local_ip/mod.ts" 
+
+// const local_ip = await getNetworkAddr()
+// console.log (`local area network IP: ${ local_ip }`)
+
+const s = serve ({ port: 80 })
+
 const kv = await Deno.openKv();
 // await kv.init();
 
@@ -8,15 +19,13 @@ const kv = await Deno.openKv();
 // const kv = createKV("my_kv");
 // await kv.init();
 
-serve(handler, { port: 80 })
-
 let sockets = []
+let req = incoming_req
 
-function handler (incoming_req) {
+for await (const req of s) {
 
     // console.log (incoming_req.headers)
 
-    let req = incoming_req
     const upgrade = req.headers.get ("upgrade") || ""
 
     // check if it is an upgrade request
@@ -63,7 +72,7 @@ if (req.method === "GET" && req.url === "/getConfessions") {
     const confessions = [];
     for (const key of keys) {
         if (key.startsWith("confession:")) {
-            const value = async kv.get(key);
+            // const value = async kv.get(key);
             confessions.push({ text: value });
         }
     }

@@ -1,5 +1,8 @@
 import { openKv } from "@deno/kv";
-const kv = await openKv(Deno.env.get('DENO_KV_NAMESPACE'));
+
+const kv = await openKv();
+
+let savedConfessions =[]
 
 async function submitConfession() {
   const confessionText = document.getElementById('confession-input').value;
@@ -31,7 +34,7 @@ async function displayOnCanvas() {
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (const confession of confession-container) {
+      for (const confession of savedConfessions) {
           ctx.font = "16px Arial";
           ctx.fillStyle = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
           ctx.fillText(confession.text, Math.random() * canvas.width, Math.random() * canvas.height);
