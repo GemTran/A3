@@ -1,7 +1,7 @@
 
 //In server
-// import { serve } from "https://deno.land/std@0.157.0/http/server.ts"
-// import { serveDir } from "https://deno.land/std@0.157.0/http/file_server.ts"
+import { serve } from "https://deno.land/std@0.157.0/http/server.ts"
+import { serveDir } from "https://deno.land/std@0.157.0/http/file_server.ts"
 
 // import { getNetworkAddr } from "https://deno.land/x/local_ip/mod.ts" 
 
@@ -41,11 +41,11 @@ function handler (incoming_req) {
 
         socket.onerror = e => console.dir (e)
 
-        socket.onmessage = e => {
+        socket.onmessage = e => { //moi client la mot socket -> 5 sockets = 5 messages
             console.log (`incoming message: ${ e.data }`)
 
             // send the message data back out 
-            // to each of the sockets in the array
+            // to each of the sockets in the array - for client
             sockets.forEach (s => s.send (e.data))
         }
 
