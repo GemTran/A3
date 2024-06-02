@@ -1,31 +1,25 @@
 // import { openKv } from "@deno/kv";
+const kv = await Deno.openKv();
 
-//In server
+await kv.set("messages", messageElement)
+// //In server
 import { serve } from "https://deno.land/std@0.157.0/http/server.ts"
 import { serveDir } from "https://deno.land/std@0.157.0/http/file_server.ts"
 
-import { getNetworkAddr } from "https://deno.land/x/local_ip/mod.ts" 
+// import { getNetworkAddr } from "https://deno.land/x/local_ip/mod.ts" 
 
 // const local_ip = await getNetworkAddr()
 // console.log (`local area network IP: ${ local_ip }`)
 
-const s = serve ({ port: 80 })
-
-const kv = await Deno.openKv();
-// await kv.init();
-
-// import { createKV } from "https://deno.land/x/kv/mod.ts";
-
-// const kv = createKV("my_kv");
-// await kv.init();
+// const s = serve ({ port: 80 })
+serve (handler, { port: 80 })
 
 let sockets = []
-let req = incoming_req
 
-for await (const req of s) {
+function handler (incoming_req) {
 
     // console.log (incoming_req.headers)
-
+    let req = incoming_req
     const upgrade = req.headers.get ("upgrade") || ""
 
     // check if it is an upgrade request

@@ -40,7 +40,7 @@ const confessionInput = document.getElementById('confession-input')
 const button = document.getElementById('submit-button')
 const form = document.getElementById('form')
 
-let savedConfessions =[]
+let savedConfessions = []
 let colorIndex = 0;
 const colors = ['#ff6699', '#33ccff', '#ffcc33', '#99ff99']
 

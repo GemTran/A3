@@ -1,6 +1,4 @@
-import { openKv } from "@deno/kv";
 
-const kv = await openKv();
 
 let savedConfessions =[]
 
