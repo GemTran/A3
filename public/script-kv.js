@@ -1,4 +1,11 @@
+//In client, can add event listeners for close, error, message events
+const socket = new WebSocket (`wss://localhost/`)
+socket.onopen  = () => console.log (`client websocket opened!`)
+socket.onclose = () => console.log (`client websocket closed!`)
+socket.onerror =  e => console.dir (e)
 
+document.body.style.margin   = 0
+document.body.style.overflow = `hidden`
 
 let savedConfessions =[]
 

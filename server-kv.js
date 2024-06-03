@@ -4,10 +4,10 @@ import { serveDir } from "https://deno.land/std@0.157.0/http/file_server.ts"
 
 // import { getNetworkAddr } from "https://deno.land/x/local_ip/mod.ts" 
 
+// import kv database
 const kv = await Deno.openKv();
 
 // websocket - always listen
-
 serve (handler, { port: 80 })
 
 let sockets = []
@@ -57,6 +57,7 @@ function handler (incoming_req) {
             sockets.forEach (s => s.send (newData));
 }
         }
+        
         return response
     
     }

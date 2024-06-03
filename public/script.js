@@ -41,10 +41,8 @@ const button = document.getElementById('submit-button')
 const form = document.getElementById('form')
 
 let savedConfessions = []
-let colorIndex = 0;
-const colors = ['#ff6699', '#33ccff', '#ffcc33', '#99ff99']
-
-// button.addEventListener('click', submitConfession())
+// let colorIndex = 0;
+// const colors = ['#ff6699', '#33ccff', '#ffcc33', '#99ff99']
 
 form.addEventListener("submit", e => {
     e.preventDefault()
@@ -60,10 +58,6 @@ form.addEventListener("submit", e => {
     
     // localStorage.setItem('confession-container', JSON.stringify(savedconfession-container));  
 })
-
-// button.addEventListener('click', () => {
-//     const confessionText = confessionInput.value
-// })
 
 // To display confessions on canvas
 function displayOnCanvas(confessionText) {
