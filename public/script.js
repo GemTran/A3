@@ -1,5 +1,5 @@
 //In client, can add event listeners for close, error, message events
-const socket = new WebSocket (`wss://localhost/`)
+const socket = new WebSocket (`ws://localhost/`)
 socket.onopen  = () => console.log (`client websocket opened!`)
 socket.onclose = () => console.log (`client websocket closed!`)
 socket.onerror =  e => console.dir (e)
@@ -61,6 +61,7 @@ form.addEventListener("submit", e => {
 
 // To display confessions on canvas
 function displayOnCanvas(confessionText) {
+    
     // const div = document.createElement('div');
     // // div.classList.add('confession');
     // div.textContent = confessionText;
@@ -74,6 +75,7 @@ function displayOnCanvas(confessionText) {
 
     // Set canvas styles (font, color, etc.)
     ctx.font = "16px Arial";
+
     for (const confession of savedConfessions) {
         // ctx.fillStyle = colors[colorIndex % colors.length];
         // colorIndex++;

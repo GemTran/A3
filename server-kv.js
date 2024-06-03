@@ -2,7 +2,10 @@
 import { serve } from "https://deno.land/std@0.157.0/http/server.ts"
 import { serveDir } from "https://deno.land/std@0.157.0/http/file_server.ts"
 
-// import { getNetworkAddr } from "https://deno.land/x/local_ip/mod.ts" 
+import { getNetworkAddr } from "https://deno.land/x/local_ip/mod.ts" 
+
+const local_ip = await getNetworkAddr()
+console.log (`local area network IP: ${ local_ip }`) 
 
 // import kv database
 const kv = await Deno.openKv();
@@ -16,6 +19,13 @@ function handler (incoming_req) {
 
     // console.log (incoming_req.headers)
     let req = incoming_req
+
+    // if the requested url does not specify a filename
+    if (req.url.endsWith (`/`)) {
+
+        // add 'index.html' to the url
+        req = new Request (`${ req.url }index.html`, req)
+    }
 
     //backend check headers - json - if there is update
     const upgrade = req.headers.get ("upgrade") || ""
@@ -55,12 +65,18 @@ function handler (incoming_req) {
             newData = [...currentData, e.data];
             await kv.set(["testing"], newData);
             sockets.forEach (s => s.send (newData));
-}
         }
-        
-        return response
-    
     }
+    // serve directory
+    const options = {
+
+        // route requests to this
+        // directory in the file system
+        fsRoot: `public`
+    }
+    return serveDir (req, options)
+
+}
 
 // //api - gui khi yeu cau 
 // if (req.method === "POST" && req.url === "/saveConfession") {
