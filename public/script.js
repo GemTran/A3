@@ -32,7 +32,7 @@ const form = document.getElementById('form')
 function displayOnCanvas() {
 
     // Clear canvas before drawing
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
 
     // Set canvas styles (font, color, etc.)
     ctx.font = "16px Arial";
@@ -40,8 +40,8 @@ function displayOnCanvas() {
     savedConfessions.forEach (c => {
         
         //convert ratio to pixels
-        const x_pos = c.x_phase * canvas.width
-        const y_pos = c.y_phase * canvas.height
+        const x_pos = c.x_phase * innerWidth
+        const y_pos = c.y_phase * innerHeight
         ctx.fillStyle = c.color;
         ctx.fillText(c.text, x_pos, y_pos);
     })
