@@ -46,10 +46,6 @@ function handler (incoming_req) {
         socket.onerror = e => console.dir (e)
 
         socket.onmessage = async e => {
-            // console.log (`incoming message: ${ e.data }`)
-
-            
-            // sockets.forEach (s => s.send (e.data))
 
             console.log (`incoming message: ${ e.data }`)
             let currentData = [];
