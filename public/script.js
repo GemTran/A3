@@ -5,8 +5,6 @@ socket.onclose = () => console.log (`client websocket closed!`)
 socket.onerror =  e => console.dir (e)
 
 let savedConfessions = []
-// let colorIndex = 0;
-// const colors = ['#ff6699', '#33ccff', '#ffcc33', '#99ff99']
 
 socket.onmessage = e => { 
 
@@ -28,8 +26,26 @@ canvas.width = innerWidth
 canvas.height = innerHeight
 
 const confessionInput = document.getElementById('confession-input')
-// const button = document.getElementById('submit-button')
 const form = document.getElementById('form')
+
+// To display confessions on canvas
+function displayOnCanvas() {
+
+    // Clear canvas before drawing
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Set canvas styles (font, color, etc.)
+    ctx.font = "16px Arial";
+
+    savedConfessions.forEach (c => {
+        
+        //convert ratio to pixels
+        const x_pos = c.x_phase * canvas.width
+        const y_pos = c.y_phase * canvas.height
+        ctx.fillStyle = c.color;
+        ctx.fillText(c.text, x_pos, y_pos);
+    })
+}
 
 form.onsubmit = e => {
 
@@ -57,21 +73,4 @@ form.onsubmit = e => {
     confessionInput.value = ''
 }
 
-// To display confessions on canvas
-function displayOnCanvas() {
 
-    // Clear canvas before drawing
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Set canvas styles (font, color, etc.)
-    ctx.font = "16px Arial";
-
-    savedConfessions.forEach (c => {
-        
-        //convert ratio to pixels
-        const x_pos = c.x_phase * canvas.width
-        const y_pos = c.y_phase * canvas.height
-        ctx.fillStyle = c.color;
-        ctx.fillText(c.text, x_pos, y_pos);
-    })
-}

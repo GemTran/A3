@@ -1,4 +1,3 @@
-
 //In server
 import { serve } from "https://deno.land/std@0.157.0/http/server.ts"
 import { serveDir } from "https://deno.land/std@0.157.0/http/file_server.ts"
@@ -17,6 +16,7 @@ function handler (incoming_req) {
     // console.log (incoming_req.headers)
 
     let req = incoming_req
+    
     const upgrade = req.headers.get ("upgrade") || ""
 
     // check if it is an upgrade request
