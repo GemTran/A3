@@ -10,9 +10,11 @@ let savedConfessions = []
 
 socket.onmessage = e => { 
 
+    // convert the string back into an object
     const confessionObj = JSON.parse (e.data) 
     if (!confessionObj.text) return 
 
+    // add the object to the array
     savedConfessions.push (confessionObj) 
     displayOnCanvas()
 };
@@ -65,24 +67,11 @@ function displayOnCanvas() {
     ctx.font = "16px Arial";
 
     savedConfessions.forEach (c => {
+        
+        //convert ratio to pixels
+        const x_pos = c.x_phase * canvas.width
+        const y_pos = c.y_phase * canvas.height
         ctx.fillStyle = c.color;
-        ctx.fillText(c.text, c.x_phase * canvas.width, c.y_phase * canvas.height);
+        ctx.fillText(c.text, x_pos, y_pos);
     })
-}
-
-document.body.onclick = e => {
-
-    // converting the .offset positions
-    // to a ratio of the total length
-    // between 0 - 1
-    const pos = {
-        x_phase : e.offsetX / canvas.width,
-        y_phase : e.offsetY / canvas.height,
-    }
-
-    // turn the pos object into a string
-    const pos_string = JSON.stringify (pos)
-
-    // send to the websocket server
-    socket.send (pos_string)
 }
