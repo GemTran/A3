@@ -78,22 +78,3 @@ function handler (incoming_req) {
 
 }
 
-// //api - gui khi yeu cau 
-// if (req.method === "POST" && req.url === "/saveConfession") {
-//     const { text } =  req.json();
-    
-//     kv.set(`confession:${Date.now()}`, text);
-//     return new Response(null, { status: 201 }); // Created
-// }
-
-// if (req.method === "GET" && req.url === "/getConfessions") {
-//     const keys =  kv.keys();
-//     const confessions = [];
-//     for (const key of keys) {
-//         if (key.startsWith("confession:")) {
-//             // const value = async kv.get(key);
-//             confessions.push({ text: value });
-//         }
-//     }
-//     return new Response(JSON.stringify(confessions), { status: 200 });
-// }

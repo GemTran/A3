@@ -4,27 +4,17 @@ socket.onopen  = () => console.log (`client websocket opened!`)
 socket.onclose = () => console.log (`client websocket closed!`)
 socket.onerror =  e => console.dir (e)
 
-// const squares = []
+let savedConfessions = []
+// let colorIndex = 0;
+// const colors = ['#ff6699', '#33ccff', '#ffcc33', '#99ff99']
 
-// socket.onmessage = e => {
-//     console.log (`websocket message received:`)
+socket.onmessage = e => { 
 
-//     // convert the string back into an object
-//     const pos = JSON.parse (e.data)
+    const confessionObj = JSON.parse (e.data) 
+    if (!confessionObj.text) return 
 
-//     // add the position object to the squares array
-//     squares.push (pos)
-
-//     // display the position object in the console
-//     console.dir (pos)
-// }
-
-socket.onmessage = e => {
-    const positionData = JSON.parse(e.data)
-    // Find the element associated with this position data and update its position
-    // This requires a mapping between elements and their identifiers sent to the server
-    const elementToUpdate = getElementByIdentifier(positionData.id) // Implement this function
-    elementToUpdate.style.transform = `translate(${positionData.x}px, ${positionData.y}px)`
+    savedConfessions.push (confessionObj) 
+    displayOnCanvas()
 };
 
 document.body.style.margin   = 0
@@ -35,40 +25,38 @@ const ctx = canvas.getContext('2d')
 canvas.width = innerWidth
 canvas.height = innerHeight
 
-// const confession-container = document.getElementById('confession-container') //div
 const confessionInput = document.getElementById('confession-input')
-const button = document.getElementById('submit-button')
+// const button = document.getElementById('submit-button')
 const form = document.getElementById('form')
 
-let savedConfessions = []
-// let colorIndex = 0;
-// const colors = ['#ff6699', '#33ccff', '#ffcc33', '#99ff99']
+form.onsubmit = e => {
 
-form.addEventListener("submit", e => {
-    e.preventDefault()
-    const confessionText = confessionInput.value
+    e.preventDefault () 
 
-    if (!confessionText) return
-    displayOnCanvas(confessionText)
+    const confessionText = confessionInput.value 
+    if (!confessionText) return 
 
-    confessionInput.value = ''
-
-    // Save confession to storage
-    savedConfessions.push(confessionText)
+    // random color
+    const r = Math.floor(Math.random() * 256) 
+    const g = Math.floor(Math.random() * 256) 
+    const b = Math.floor(Math.random() * 256) 
     
-    // localStorage.setItem('confession-container', JSON.stringify(savedconfession-container));  
-})
+    const confessionObj = { 
+        text: confessionText, 
+        // return value from 0 to 1 - ratio to fit to different window size
+        x_phase: Math.random(), 
+        y_phase: Math.random(), 
+        color: `rgba(${ r }, ${ g }, ${ b })` 
+    } 
+
+    savedConfessions.push(confessionObj) 
+    socket.send (JSON.stringify (confessionObj)) 
+    displayOnCanvas() 
+    confessionInput.value = ''
+}
 
 // To display confessions on canvas
-function displayOnCanvas(confessionText) {
-    
-    // const div = document.createElement('div');
-    // // div.classList.add('confession');
-    // div.textContent = confessionText;
-    // // Append the confession element to the DOM
-    // document.getElementById("confession-container").appendChild(div);
-    // div.style.color = colors[colorIndex % colors.length];
-    // colorIndex++;
+function displayOnCanvas() {
 
     // Clear canvas before drawing
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -76,15 +64,11 @@ function displayOnCanvas(confessionText) {
     // Set canvas styles (font, color, etc.)
     ctx.font = "16px Arial";
 
-    for (const confession of savedConfessions) {
-        // ctx.fillStyle = colors[colorIndex % colors.length];
-        // colorIndex++;
-
-        ctx.fillStyle = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
-        ctx.fillText(confession, Math.random() * canvas.width, Math.random() * canvas.height);
-    }   
+    savedConfessions.forEach (c => {
+        ctx.fillStyle = c.color;
+        ctx.fillText(c.text, c.x_phase * canvas.width, c.y_phase * canvas.height);
+    })
 }
-
 
 document.body.onclick = e => {
 
@@ -102,6 +86,3 @@ document.body.onclick = e => {
     // send to the websocket server
     socket.send (pos_string)
 }
-
-          
-
