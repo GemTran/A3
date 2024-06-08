@@ -12,6 +12,7 @@ serve (handler, { port: 80 })
 
 // import kv database
 const kv = await Deno.openKv();
+await kv.set ([ "confessions" ], [ ])
 
 let sockets = []
 
@@ -28,11 +29,13 @@ function handler (incoming_req) {
 
         const { socket, response } = Deno.upgradeWebSocket (req)
 
-        socket.onopen  = () => {
+        socket.onopen = async () => {
             console.log (`server WebSocket opened`)
-
-            // add, save the socket to the sockets array
             sockets.push (socket)
+
+            const entry = await kv.get(["confessions"])
+            const confessionArray = entry.value
+            socket.send (JSON.stringify (confessionArray))
         }
 
         socket.onclose = () => {
@@ -45,18 +48,24 @@ function handler (incoming_req) {
 
         socket.onerror = e => console.dir (e)
 
-        socket.onmessage = async e => {
+        socket.onmessage = async e => { //moi client la mot socket -> 5 sockets = 5 messages
+            const newData = JSON.parse (e.data)
+            if (!newData.text) return
 
-            console.log (`incoming message: ${ e.data }`)
-            let currentData = [];
-            currentData = await kv.get(["confession"]);
-            newData = [...currentData, e.data];
-            
-            await kv.set(["confession"], newData);
+            console.log (`incoming confession: ${ newData.text }`)
+
+            const entry = await kv.get ([ "confessions" ])
+            const confessionArray = entry.value
+            confessionArray.push (newData)
+
+            await kv.set ([ "confessions" ], confessionArray)
+
             // send the message data back out 
-            // to each of the sockets in the array
-            sockets.forEach (s => s.send (newData));
+            // to each of the sockets in the array - for client
+            sockets.forEach (s => s.send (JSON.stringify (confessionArray)))
         }
+
+        return response
     }
     // if the requested url does not specify a filename
     if (req.url.endsWith (`/`)) {
@@ -76,3 +85,15 @@ function handler (incoming_req) {
 
 }
 
+// socket.onmessage = async e => {
+
+//     console.log (`incoming message: ${ e.data }`)
+//     let currentData = [];
+//     currentData = await kv.get(["confession"]);
+//     newData = [...currentData, e.data];
+    
+//     await kv.set(["confession"], newData);
+//     // send the message data back out 
+//     // to each of the sockets in the array
+//     sockets.forEach (s => s.send (newData));
+// }

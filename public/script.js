@@ -4,16 +4,22 @@ socket.onopen  = () => console.log (`client websocket opened!`)
 socket.onclose = () => console.log (`client websocket closed!`)
 socket.onerror =  e => console.dir (e)
 
+document.body.style.margin   = 0
+document.body.style.overflow = `hidden`
+
 let savedConfessions = []
 
 socket.onmessage = e => { 
 
+    console.dir (e)
     // convert the string back into an object
-    const confessionObj = JSON.parse (e.data) 
-    if (!confessionObj.text) return 
+    const confessionArray = JSON.parse (e.data) 
+
+    console.dir (confessionArray)
 
     // add the object to the array
-    savedConfessions.push (confessionObj) 
+    // savedConfessions.push (confessionArray) 
+    savedConfessions = confessionArray
     displayOnCanvas()
 };
 
@@ -36,6 +42,7 @@ function displayOnCanvas() {
 
     // Set canvas styles (font, color, etc.)
     ctx.font = "16px Arial";
+
 
     savedConfessions.forEach (c => {
         
@@ -67,9 +74,9 @@ form.onsubmit = e => {
         color: `rgba(${ r }, ${ g }, ${ b })` 
     } 
 
-    savedConfessions.push(confessionObj) 
+    // savedConfessions.push(confessionObj) 
+    // displayOnCanvas()
     socket.send (JSON.stringify (confessionObj)) 
-    displayOnCanvas() 
     confessionInput.value = ''
 }
 
