@@ -84,16 +84,3 @@ function handler (incoming_req) {
     return serveDir (req, options)
 
 }
-
-// socket.onmessage = async e => {
-
-//     console.log (`incoming message: ${ e.data }`)
-//     let currentData = [];
-//     currentData = await kv.get(["confession"]);
-//     newData = [...currentData, e.data];
-    
-//     await kv.set(["confession"], newData);
-//     // send the message data back out 
-//     // to each of the sockets in the array
-//     sockets.forEach (s => s.send (newData));
-// }

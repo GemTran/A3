@@ -1,31 +1,33 @@
 <!doctype html>
 <head>
-    <title> HuMAn </title>
+    <title> A3 </title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anonymous Confessions</title>
     <style>
         body {
             font-family: sans-serif;
-            margin: 0;
-            background-color: #f0f0f0;
-            height: 100vh;
-            display: flex;
+            /* margin: 0; */
+            /* background-color: #04241c; */
+            /* height: 100vh; */
+            /* display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: center; */
         }
         #form {
             position: absolute;
             z-index: 2;
             display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
             flex-direction: column;
             gap: 10px;
         }
         #confession-input {
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 2px solid #cccccc;
             border-radius: 5px;
-            width: 200px;
+            width: 300px;
         }
         /* .confession {
             position: absolute;
@@ -34,16 +36,24 @@
             font-size: 16px;
             animation: float 5s ease-in-out infinite;
         } */
+        /* #c2 {
+            position: absolute;
+            z-index: -1;
+            left: 0;
+        } */
     </style>
 </head>
 
 <body>
     <form id="form">
-        <input type="text" id="confession-input" placeholder="Type your confession...">
+        <input type="text" id="confession-input" placeholder="Today I feel...">
         <!-- <button type="button" id="submit-button">Submit</button> -->
     </form>
     
     <canvas id="confessionCanvas"></canvas>
+    <!-- <canvas id="c2"></canvas> -->
+    <script type="module" src="c2.js"></script>
     <script type="module" src="script.js"></script>
+    
 
 </body>
