@@ -9,49 +9,50 @@
             font-family: sans-serif;
             /* margin: 0; */
             /* background-color: #04241c; */
-            /* height: 100vh; */
-            /* display: flex;
+            height: 100%;
+            display: flex;
             justify-content: center;
-            align-items: center; */
+            
+            
         }
-        #form {
-            position: absolute;
+
+        #inputContainer {
+            position: relative;
             z-index: 2;
             display: flex;
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-            flex-direction: column;
-            gap: 10px;
+            justify-content: center; /*Center horizontally */
+            align-items: center; /*Center vertically*/
+            
         }
         #confession-input {
+            
             padding: 10px;
             border: 2px solid #cccccc;
             border-radius: 5px;
             width: 300px;
         }
-        /* .confession {
-            position: absolute;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 16px;
-            animation: float 5s ease-in-out infinite;
-        } */
-        /* #c2 {
+
+        #c2 {
             position: absolute;
             z-index: -1;
             left: 0;
-        } */
+            pointer-events: auto;
+        }
     </style>
 </head>
 
 <body>
-    <form id="form">
-        <input type="text" id="confession-input" placeholder="Today I feel...">
-        <!-- <button type="button" id="submit-button">Submit</button> -->
-    </form>
+    <div id="inputContainer"></div>
+        <form id="form">
+            
+            <input type="text" id="confession-input" placeholder="Today I feel...">
+            <!-- <button type="button" id="submit-button">Submit</button> -->
+        
+        </form>
+    </div>
     
     <canvas id="confessionCanvas"></canvas>
-    <!-- <canvas id="c2"></canvas> -->
+    <canvas id="c2"></canvas>
     <script type="module" src="c2.js"></script>
     <script type="module" src="script.js"></script>
     
