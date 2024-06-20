@@ -107,33 +107,35 @@ let random = new c2.Random();
 let img = new Image();
 // image.src = "images/Img1.png"; //Add image path
 
+// Declare variable to make image as pattern for drawing shapes
+let pattern;
+
 // Define array of image paths
 const imgPaths = [
     "images/Img1.png",
     "images/Img2.JPG",
     "images/Img3.JPG",
     "images/Img4.png",
-    "images/Img5.JPG",
-    "images/Img6.JPG",
-]
-// Declare variable to make image as pattern for drawing shapes
-let pattern;
+    "images/Img5.png",
+    "images/Img6.JPG"
+];
+
 img.onload = () => {
     pattern = renderer.context.createPattern(img,"repeat");
 };
 
-let i = 0
+let index = 0
 function loadImagePattern () {
-    img.src = imgPaths[i];
+    img.src = imgPaths[index];
 }
 
 loadImagePattern();
 
 //Change pattern every 5 secs
 setInterval(() => {
-    i++ % imgPaths.length; //Loop through array
+    index = (index + 1) % imgPaths.length; //Loop through array
     loadImagePattern();
-}, 8000);
+}, 5000);
 
 class Agent extends c2.Circle{
     constructor() {
@@ -245,7 +247,7 @@ function resize() {
     let parent = renderer.canvas.parentElement;
     renderer.size(innerWidth, innerHeight);
 }
-
+resize();
 //-----------------------
 
 //--------AUDIO----------
