@@ -1,5 +1,5 @@
 //In client, can add event listeners for close, error, message events
-const socket = new WebSocket (`ws://localhost/`)
+const socket = new WebSocket (`wss://howarewe-thutran.deno.dev/`)
 socket.onopen  = () => console.log (`client websocket opened!`)
 socket.onclose = () => console.log (`client websocket closed!`)
 socket.onerror =  e => console.dir (e)
