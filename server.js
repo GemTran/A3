@@ -48,7 +48,7 @@ function handler (incoming_req) {
 
         socket.onerror = e => console.dir (e)
 
-        socket.onmessage = async e => { //moi client la mot socket -> 5 sockets = 5 messages
+        socket.onmessage = async e => { 
             const newData = JSON.parse (e.data)
             if (!newData.text) return
 

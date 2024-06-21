@@ -23,12 +23,10 @@ socket.onmessage = e => {
     displayOnCanvas()
 };
 
-
 const canvas = document.getElementById('confessionCanvas')
 const ctx = canvas.getContext('2d')
 canvas.width = innerWidth
 canvas.height = innerHeight
-
 
 canvas.style.zIndex = 1
 canvas.style.position = 'absolute'
@@ -36,7 +34,6 @@ canvas.style.backgroundColor = 'transparent'
 canvas.style.pointerEvents = 'none'
 
 const confessionInput = document.getElementById('confession-input')
-const form = document.getElementById('form')
 
 // To display confessions on canvas
 function displayOnCanvas() {
@@ -96,16 +93,26 @@ const c2Ctx = c2Canvas.getContext('2d')
 c2Canvas.width = innerWidth;
 c2Canvas.height = innerHeight;
 
+c2Canvas.style.zIndex = -1
+c2Canvas.style.position = 'absolute'
+c2Canvas.style.pointerEvents = 'auto'
+
 const renderer = new c2.Renderer(c2Canvas);
 resize();
 
-renderer.background('#cccccc');
+renderer.background('#000000');
 
 let random = new c2.Random();
 
 //---Image Pattern Arrays---
+
+// Create a temporary canvas to draw img
+const tempCanvas = document.createElement('canvas');
+tempCanvas.width = c2Canvas.width; // Match the main canvas width
+tempCanvas.height = c2Canvas.height; // Match the main canvas height
+const tempCtx = tempCanvas.getContext('2d');
+
 let img = new Image();
-// image.src = "images/Img1.png"; //Add image path
 
 // Declare variable to make image as pattern for drawing shapes
 let pattern;
@@ -115,25 +122,33 @@ const imgPaths = [
     "images/Img1.png",
     "images/Img2.JPG",
     "images/Img3.JPG",
-    "images/Img4.png",
+    "images/Img4.JPG",
     "images/Img5.png",
     "images/Img6.JPG"
 ];
 
 img.onload = () => {
-    pattern = renderer.context.createPattern(img,"repeat");
+    // pattern = renderer.context.createPattern(tempCanvas,"repeat");
+    //Resize img to fit canvas height and keep img ratio
+    tempCanvas.height = tempCanvas.width * (img.height / img.width)
+    //Draw the image on the temporary canvas
+    tempCtx.drawImage(img, 0, 0, tempCanvas.width, tempCanvas.height);
+
+    // Use the temporary canvas as a pattern
+    pattern = ctx.createPattern(tempCanvas, 'repeat');
 };
 
-let index = 0
+let i = 0
 function loadImagePattern () {
-    img.src = imgPaths[index];
+    img.src = imgPaths[i];
 }
 
 loadImagePattern();
 
 //Change pattern every 5 secs
 setInterval(() => {
-    index = (index + 1) % imgPaths.length; //Loop through array
+    i++
+    i %= imgPaths.length; // cycle back to 0
     loadImagePattern();
 }, 5000);
 
@@ -247,7 +262,7 @@ function resize() {
     let parent = renderer.canvas.parentElement;
     renderer.size(innerWidth, innerHeight);
 }
-resize();
+
 //-----------------------
 
 //--------AUDIO----------
@@ -257,11 +272,15 @@ const audio_context = new AudioContext ()
 audio_context.suspend ()
 
 // Define an array of notes 
-// ["A5" 880, "B5", "C5", "D5", "E5", "F5"];
+const notes = [62, 65, 69, 72, 80, 82]
 
-// Convert notes to frequency
-// const notes = [62, 987.77, 523.25, 587.33, 659.26, 698.46]
-const notes = [58, 65, 69, 72, 80, 82]
+function getRandomIndex () {
+    return Math.floor(Math.random() * notes.length);
+}
+
+const randIndex = getRandomIndex();
+console.log(`Index: ${randIndex}, Note: ${notes[randIndex]}`);
+
 // Function to play a note
 function playNote(note, length) {
     // If the audio context is not running, resume it
@@ -271,7 +290,7 @@ function playNote(note, length) {
     const osc = audio_context.createOscillator();
 
     // Set the oscillator type to sine
-    osc.type = 'triangle';
+    osc.type = 'sine';
 
     // Set the frequency of the oscillator
     // osc.frequency.value = note;
@@ -282,18 +301,25 @@ function playNote(note, length) {
     // Create an amp node
     const amp = audio_context.createGain();
     amp.gain.value = 0.6; // Slightly reverberate the sound
+    // Connect the oscillator to the amp and then to the audio output
+    osc.connect(amp).connect(audio_context.destination);
     // the .currentTime property of the audio context
     // contains a time value in seconds
     const now = audio_context.currentTime
+    amp.gain.setValueAtTime (0, now)
 
-    // Connect the oscillator to the amp and then to the audio output
-    osc.connect(amp).connect(audio_context.destination);
+    // take 0.02 seconds to go to 0.4, linearly
+    amp.gain.linearRampToValueAtTime (0.4, now + 0.02)
+
+    // this method does not like going to all the way to 0
+    // so take length seconds to go to 0.0001, exponentially
+    amp.gain.exponentialRampToValueAtTime (0.0001, now + length)
 
     // Start the oscillator
-    osc.start(audio_context.currentTime);
+    osc.start(now);
 
     // Stop the oscillator after the specified length
-    osc.stop(audio_context.currentTime + length);
+    osc.stop(now + length);
 }
 
 // Initialize the audio context
@@ -303,7 +329,8 @@ function initAudio() {
 
 // // Event listener for playNote initialising when mouse move
 c2Canvas.addEventListener("mousemove", e => {
-    playNote(notes[0],1)
+    playNote(notes[randIndex],1)
+    
 })
 
 //-----------------------
