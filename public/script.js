@@ -37,14 +37,14 @@ const confessionInput = document.getElementById('confession-input')
 
 // To display confessions on canvas
 function displayOnCanvas() {
+
     // Save the current state of the canvas context
     ctx.save();
+
     // Clear canvas before drawing
     ctx.clearRect(0, 0, innerWidth, innerHeight);
 
-    // Set canvas styles (font, color, etc.)
-    ctx.font = "16px Arial";
-
+    ctx.font = "20px Miniver";
 
     savedConfessions.forEach (c => {
         
@@ -55,7 +55,7 @@ function displayOnCanvas() {
         ctx.fillText(c.text, x_pos, y_pos);
     })
 
-    // Restore the original state to prevent interference with c2 library rendering
+    // Restore the original state
     ctx.restore();
 }
 
@@ -74,48 +74,29 @@ form.onsubmit = e => {
     // create a confession object to contain text, position, color 
     const confessionObj = { 
         text: confessionText, 
-        // return value from 0 to 1 - ratio to fit to different window size
+        // return value from 0 to 1 - ratio
         x_phase: Math.random(), 
         y_phase: Math.random(), 
         color: `rgba(${ r }, ${ g }, ${ b })` 
     } 
 
-    // savedConfessions.push(confessionObj) 
-    // displayOnCanvas()
     socket.send (JSON.stringify (confessionObj)) 
     confessionInput.value = ''
 }
 
-//----------c2----------
-const c2Canvas = document.getElementById('c2');
-const c2Ctx = c2Canvas.getContext('2d')
-// Set sizes
-c2Canvas.width = innerWidth;
-c2Canvas.height = innerHeight;
-
-c2Canvas.style.zIndex = -1
-c2Canvas.style.position = 'absolute'
-c2Canvas.style.pointerEvents = 'auto'
-
-const renderer = new c2.Renderer(c2Canvas);
-resize();
-
-renderer.background('#000000');
-
-let random = new c2.Random();
-
-//---Image Pattern Arrays---
+//------Image Pattern Arrays--------
 
 // Create a temporary canvas to draw img
 const tempCanvas = document.createElement('canvas');
-tempCanvas.width = c2Canvas.width; // Match the main canvas width
-tempCanvas.height = c2Canvas.height; // Match the main canvas height
+tempCanvas.width = canvas.width;
+tempCanvas.height = canvas.height; 
 const tempCtx = tempCanvas.getContext('2d');
 
 let img = new Image();
 
-// Declare variable to make image as pattern for drawing shapes
+// Make image as pattern for drawing shapes
 let pattern;
+let i = 0;
 
 // Define array of image paths
 const imgPaths = [
@@ -128,9 +109,10 @@ const imgPaths = [
 ];
 
 img.onload = () => {
-    // pattern = renderer.context.createPattern(tempCanvas,"repeat");
+
     //Resize img to fit canvas height and keep img ratio
-    tempCanvas.height = tempCanvas.width * (img.height / img.width)
+    tempCanvas.height = tempCanvas.width * (img.height / img.width);
+
     //Draw the image on the temporary canvas
     tempCtx.drawImage(img, 0, 0, tempCanvas.width, tempCanvas.height);
 
@@ -138,10 +120,9 @@ img.onload = () => {
     pattern = ctx.createPattern(tempCanvas, 'repeat');
 };
 
-let i = 0
 function loadImagePattern () {
     img.src = imgPaths[i];
-}
+};
 
 loadImagePattern();
 
@@ -152,16 +133,35 @@ setInterval(() => {
     loadImagePattern();
 }, 5000);
 
+
+//---c2 Library QuadTrees Inspired Ren Yuan---------
+const c2Canvas = document.getElementById('c2');
+const c2Ctx = c2Canvas.getContext('2d');
+
+c2Canvas.width = innerWidth;
+c2Canvas.height = innerHeight;
+
+c2Canvas.style.zIndex = -1;
+c2Canvas.style.position = 'absolute';
+c2Canvas.style.pointerEvents = 'auto';
+
+const renderer = new c2.Renderer(c2Canvas);
+resize();
+
+renderer.background('#000000');
+
+let random = new c2.Random();
+
 class Agent extends c2.Circle{
     constructor() {
         let x = random.next(renderer.width);
         let y = random.next(renderer.height);
-        let r = random.next(10, renderer.width/15);
+        let r = random.next(10, renderer.width/12);
         super(x, y, r);
 
         this.vx = random.next(-2, 2);
         this.vy = random.next(-2, 2);
-        this.color = c2.Color.hsl(random.next(0, 30), random.next(30, 60), random.next(20, 100));
+        this.color = c2.Color.hsl(random.next(0, 50), random.next(20, 60), random.next(20, 100));
     }
 
     update(){
@@ -198,7 +198,6 @@ class Agent extends c2.Circle{
 let agents = [];
 for (let i = 0; i < 25; i++) agents[i] = new Agent();
 
-
 let quadTree = new c2.QuadTree(new c2.Rect(0,0,renderer.width,renderer.height), 1);
 
 function drawQuadTree(quadTree){
@@ -207,7 +206,7 @@ function drawQuadTree(quadTree){
     renderer.fill(pattern);
     renderer.rect(quadTree.bounds);
 
-    const overlayCol = 'rgba(220, 120, 120, 0.8)';
+    const overlayCol = 'rgba(150, 80, 90, 0.7)';
     renderer.fill(overlayCol);
     renderer.rect(quadTree.bounds);
 
@@ -217,7 +216,6 @@ function drawQuadTree(quadTree){
 
 let circle = new c2.Circle(0, 0, renderer.width/10);
 
-
 renderer.draw(() => {
     renderer.clear();
 
@@ -226,12 +224,10 @@ renderer.draw(() => {
 
     drawQuadTree(quadTree);
 
-
     for (let i = 0; i < agents.length; i++) {
         agents[i].update();
         agents[i].display();
     }
-
 
     let mouse = new c2.Point(renderer.mouse.x, renderer.mouse.y);
     circle.p = mouse;
@@ -251,35 +247,30 @@ renderer.draw(() => {
         renderer.fill(false);
         renderer.circle(objects[i]);
     }
-
-    // Call displayOnCanvas at the end of the c2 draw loop
-    // displayOnCanvas();
 });
 
-
-window.addEventListener('resize', resize);
 function resize() {
     let parent = renderer.canvas.parentElement;
     renderer.size(innerWidth, innerHeight);
 }
 
-//-----------------------
+window.addEventListener('resize', resize);
+
+resize();
 
 //--------AUDIO----------
 
 // get and suspend audio context
-const audio_context = new AudioContext ()
-audio_context.suspend ()
+const audio_context = new AudioContext ();
+audio_context.suspend ();
 
 // Define an array of notes 
-const notes = [62, 65, 69, 72, 80, 82]
+const notes = [59, 62, 65, 69, 72, 80, 82, 79, 75, 68];
 
-function getRandomIndex () {
-    return Math.floor(Math.random() * notes.length);
-}
-
-const randIndex = getRandomIndex();
-console.log(`Index: ${randIndex}, Note: ${notes[randIndex]}`);
+let j = 0;
+let running = false;
+let period = 200;
+let len = 0;
 
 // Function to play a note
 function playNote(note, length) {
@@ -288,20 +279,16 @@ function playNote(note, length) {
 
     // Create an oscillator
     const osc = audio_context.createOscillator();
-
+    
     // Set the oscillator type to sine
     osc.type = 'sine';
 
-    // Set the frequency of the oscillator
-    // osc.frequency.value = note;
-    // set the value using the equation 
-    // for midi note to Hz
     osc.frequency.value = 440 * 2 ** ((note - 69) / 12)
 
     // Create an amp node
     const amp = audio_context.createGain();
-    amp.gain.value = 0.6; // Slightly reverberate the sound
-    // Connect the oscillator to the amp and then to the audio output
+    amp.gain.value = 0.5; // Slightly reverberate the sound
+
     osc.connect(amp).connect(audio_context.destination);
     // the .currentTime property of the audio context
     // contains a time value in seconds
@@ -322,15 +309,51 @@ function playNote(note, length) {
     osc.stop(now + length);
 }
 
+// declaring a function that plays the next note
+function nextNote () {
+    playNote (notes[j], len)
+
+    // iterate the iterator
+    j++;
+    j %= notes.length;
+}
+
+// this is a recursive function
+function notePlayer () {
+
+    // play the next note
+    nextNote ();
+;
+    setTimeout (notePlayer, period);
+}
+
 // Initialize the audio context
 function initAudio() {
     audio_context.resume();
 }
+c2Canvas.onpointerenter = e => {
 
-// // Event listener for playNote initialising when mouse move
-c2Canvas.addEventListener("mousemove", e => {
-    playNote(notes[randIndex],1)
-    
-})
+    // set running to true
+    running = true
 
-//-----------------------
+    // initiate the recurseive note_player function
+    notePlayer ()
+}
+
+// when the cursor moves over the canvas
+c2Canvas.onpointermove = e => {
+
+    // as the cursor goes from left to right
+    // from 0 to 5
+    len = 5 * e.offsetX / c2Canvas.width
+
+    // as the cursor goes from bottom to top
+    period = 100 + ((e.offsetY / c2Canvas.height) ** 2) * 400
+}
+
+// when the cursor leaves the canvas
+c2Canvas.onpointerleave = e => {
+
+    running = false
+}
+
