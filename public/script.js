@@ -105,7 +105,8 @@ const imgPaths = [
     "images/Img3.JPG",
     "images/Img4.JPG",
     "images/Img5.png",
-    "images/Img6.JPG"
+    "images/Img6.JPG",
+    "images/Img7.JPG"
 ];
 
 img.onload = () => {
